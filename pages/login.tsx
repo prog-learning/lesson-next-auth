@@ -1,15 +1,22 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { withAuth } from '../src/hoc/withAuth';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
-export const Home = () => {
+export default function Login() {
+  const router = useRouter();
   const { data: session } = useSession();
 
-  console.log(session);
+  useEffect(() => {
+    /* ログインしているときは/loginは表示できないように */
+    if (session) {
+      router.push('/');
+    }
+  }, [session, router]);
 
   return (
     <div>
       <h1>Lesson Next Auth</h1>
-      <h2>Admin Page</h2>
+      <h2>Login Page</h2>
       {session && session.user ? (
         <>
           <p>Logged in as {session.user.email}</p>
@@ -29,6 +36,4 @@ export const Home = () => {
       )}
     </div>
   );
-};
-
-export default withAuth(Home);
+}
